@@ -1,23 +1,46 @@
 package com.gopark.model;
 
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
-@RegisterForReflection
-public class Payment {
 
+@Entity
+@Cacheable
+@Table(name = "Payments")
+@RegisterForReflection
+public class Payment extends PanacheEntityBase {
+
+    @Id
+    @Column(name = "payment_id")
+    @SequenceGenerator(
+            name = "payment_sequence",
+            sequenceName = "payment_sequence",
+            allocationSize = 1,
+            initialValue = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "payment_sequence"
+    )
     private Integer paymentId;
 
+    @Column(precision = 12, scale = 2, name = "paid_amount")
     private BigDecimal paidAmount;
 
+    @Column(name  = "payment_time")
     private OffsetDateTime paymentTime;
 
+    @Column(name  = "spot_id")
     private Integer spot;
 
+    @Column(name = "fee_id")
     private Integer fee;
+
 
     public Payment() {
         // TODO document why this constructor is empty
