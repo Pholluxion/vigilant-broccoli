@@ -10,79 +10,42 @@ import java.time.OffsetDateTime;
 
 
 @Entity
-@Cacheable
 @Table(name = "Payments")
 @RegisterForReflection
 public class Payment extends PanacheEntityBase {
 
     @Id
-    @Column(name = "payment_id")
+    @Column(
+            nullable = false,
+            updatable = false
+    )
     @SequenceGenerator(
-            name = "payment_sequence",
-            sequenceName = "payment_sequence",
+            name = "primary_sequence",
+            sequenceName = "primary_sequence",
             allocationSize = 1,
             initialValue = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "payment_sequence"
+            generator = "primary_sequence"
     )
-    private Integer paymentId;
+    private Integer id;
 
-    @Column(precision = 12, scale = 2, name = "paid_amount")
+    @Column(precision = 12,
+            scale = 2,
+            name = "paid_amount"
+    )
     private BigDecimal paidAmount;
 
     @Column(name  = "payment_time")
     private OffsetDateTime paymentTime;
 
-    @Column(name  = "spot_id")
+    @Column(name  = "spot_id",
+            nullable = false
+    )
     private Integer spot;
 
-    @Column(name = "fee_id")
-    private Integer fee;
 
 
-    public Payment() {
-        // TODO document why this constructor is empty
-    }
 
-    public Integer getPaymentId() {
-        return paymentId;
-    }
-
-    public void setPaymentId(Integer paymentId) {
-        this.paymentId = paymentId;
-    }
-
-    public BigDecimal getPaidAmount() {
-        return paidAmount;
-    }
-
-    public void setPaidAmount(BigDecimal paidAmount) {
-        this.paidAmount = paidAmount;
-    }
-
-    public OffsetDateTime getPaymentTime() {
-        return paymentTime;
-    }
-
-    public void setPaymentTime(OffsetDateTime paymentTime) {
-        this.paymentTime = paymentTime;
-    }
-
-    public Integer getSpot() {
-        return spot;
-    }
-
-    public void setSpot(Integer spot) {
-        this.spot = spot;
-    }
-
-    public Integer getFee() {
-        return fee;
-    }
-
-    public void setFee(Integer fee) {
-        this.fee = fee;
-    }
 }

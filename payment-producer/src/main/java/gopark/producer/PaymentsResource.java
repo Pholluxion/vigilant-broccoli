@@ -17,10 +17,9 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 @Path("/payments")
 public class PaymentsResource {
 
-
-    @Channel("payment-requests") Emitter<Payment> paymentRequestEmitter;
-
     @Broadcast
+    @Channel("payment-requests") Emitter<Integer> paymentRequestEmitter;
+
     @Channel("payments") Multi<Payment> payments;
 
     @GET
@@ -28,11 +27,13 @@ public class PaymentsResource {
     public Multi<Payment> stream() {
         return payments;
     }
+
+
     @POST
     @Path("/request")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response createRequest(Payment payment) {
-        paymentRequestEmitter.send(payment);
+    public Response createRequest(Integer spotId) {
+        paymentRequestEmitter.send(spotId);
         return Response.accepted().build();
     }
 
