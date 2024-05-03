@@ -19,9 +19,7 @@ import io.smallrye.reactive.messaging.annotations.Blocking;
 @ApplicationScoped
 public class PaymentProcessor {
 
-
     private static final Random random = new Random();
-
 
     @Incoming("requests")
     @Outgoing("payments")
@@ -33,23 +31,29 @@ public class PaymentProcessor {
         final Integer spotIdInt = Integer.parseInt(spotId);
 
         Spot spot = getSpot(spotIdInt);
-        Payment payment = new Payment();
 
-        if (spot.getPaymentStatus() == PaymentStatus.PAID) {
-            return "Payment already done for spot " + spotId;
+        if (spot == null) {
+            return "{\"status\":\"Spot not found\",\"spotId\":\""+spotId+"\"}";
         }
 
-       final Integer id = savePayment(payment,spot);
+        if (spot.getPaymentStatus() == PaymentStatus.PAID) {
 
-        return id.toString();
+            return "{\"status\":\"Payment already done\",\"spotId\":\""+spotId+"\"}";
+        }
+
+       final Integer id = savePayment(spot);
+
+        return "{\"status\":\"Payment done\",\"spotId\":\""+spotId+"\",\"paymentId\":\""+id+"\"}";
     }
 
     @Transactional
-    public Integer savePayment(Payment payment, Spot spot) {
+    public Integer savePayment(Spot spot) {
+
+        Payment payment = new Payment();
 
         payment.setPaymentTime(OffsetDateTime.now());
         payment.setSpot(spot.getId());
-        payment.setPaidAmount(BigDecimal.valueOf(5.0 * random.nextInt(10)) );
+        payment.setPaidAmount(BigDecimal.valueOf(5.0 * random.nextInt(100)) );
         payment.persist();
 
         spot.setPaymentStatus(PaymentStatus.PAID);
