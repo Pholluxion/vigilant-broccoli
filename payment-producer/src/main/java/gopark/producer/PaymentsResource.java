@@ -1,7 +1,6 @@
 package gopark.producer;
 
 
-import gopark.model.Payment;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.reactive.messaging.annotations.Broadcast;
 import jakarta.ws.rs.GET;
@@ -20,11 +19,11 @@ public class PaymentsResource {
     @Broadcast
     @Channel("payment-requests") Emitter<Integer> paymentRequestEmitter;
 
-    @Channel("payments") Multi<Payment> payments;
+    @Channel("payments") Multi<String> payments;
 
     @GET
     @Produces(MediaType.SERVER_SENT_EVENTS)
-    public Multi<Payment> stream() {
+    public Multi<String> stream() {
         return payments;
     }
 

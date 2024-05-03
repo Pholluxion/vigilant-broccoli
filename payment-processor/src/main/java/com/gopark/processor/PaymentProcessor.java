@@ -7,7 +7,6 @@ import java.util.Random;
 import com.gopark.model.Payment;
 import com.gopark.model.PaymentStatus;
 import com.gopark.model.Spot;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.enterprise.context.ApplicationScoped;
 
 
@@ -27,7 +26,7 @@ public class PaymentProcessor {
     @Incoming("requests")
     @Outgoing("payments")
     @Blocking
-    public Payment process(String spotId) throws InterruptedException {
+    public String process(String spotId) throws InterruptedException {
 
         Thread.sleep(3000);
 
@@ -36,13 +35,18 @@ public class PaymentProcessor {
         Spot spot = getSpot(spotIdInt);
         Payment payment = new Payment();
 
-        savePayment(payment,spot);
+        if (spot.getPaymentStatus() == PaymentStatus.PAID) {
+            return "Payment already done for spot " + spotId;
+        }
 
-        return payment;
+       final Integer id = savePayment(payment,spot);
+
+        return id.toString();
     }
 
     @Transactional
-    public void savePayment(Payment payment, Spot spot) {
+    public Integer savePayment(Payment payment, Spot spot) {
+
         payment.setPaymentTime(OffsetDateTime.now());
         payment.setSpot(spot.getId());
         payment.setPaidAmount(BigDecimal.valueOf(5.0 * random.nextInt(10)) );
@@ -50,6 +54,8 @@ public class PaymentProcessor {
 
         spot.setPaymentStatus(PaymentStatus.PAID);
         spot.getEntityManager().merge(spot);
+
+        return payment.getId();
     }
 
     @Transactional
