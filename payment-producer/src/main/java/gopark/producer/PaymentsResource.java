@@ -3,10 +3,7 @@ package gopark.producer;
 
 import io.smallrye.mutiny.Multi;
 import io.smallrye.reactive.messaging.annotations.Broadcast;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -29,9 +26,9 @@ public class PaymentsResource {
 
 
     @POST
-    @Path("/request")
+    @Path("/request/{spotId}")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response createRequest(Integer spotId) {
+    public Response createRequest(@PathParam("spotId") Integer spotId) {
         paymentRequestEmitter.send(spotId);
         return Response.accepted().build();
     }
