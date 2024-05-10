@@ -5,6 +5,10 @@ This is a simple processor that receives messages from RabbitMQ and processes th
 ## How to build Docker image
 
 ```bash
+.\mvnw clean package
+```
+
+```bash
 docker build -f src/main/docker/Dockerfile.jvm -t pholluxion/payment-processor .
 ```
 
