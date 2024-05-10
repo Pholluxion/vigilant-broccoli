@@ -4,6 +4,9 @@ This is a simple producer that sends messages to RabbitMQ and retrieves the resp
 
 
 ## How to build Docker image
+```bash
+.\mvnw clean package
+```
 
 ```bash
 docker build -f src/main/docker/Dockerfile.jvm -t pholluxion/payment-producer . 
